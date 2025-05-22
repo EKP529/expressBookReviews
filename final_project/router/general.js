@@ -33,7 +33,7 @@ public_users.get('/',function (req, res) {
       reject("No books found");
     }
   });
-  
+
   getAllBooks.then((books) => {
     res.send(JSON.stringify(books, null, 2));
   }).catch((error) => {
@@ -43,13 +43,21 @@ public_users.get('/',function (req, res) {
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  const index = parseInt(req.params.isbn)
-  if (books[index]) {
-    res.send(JSON.stringify(books[index], null, 2))
-  } else {
-    res.send("No book with this ISBN found")
+  const getBookByISBN = new Promise((resolve, reject) => { 
+    const index = parseInt(req.params.isbn)
+    if (books[index]) {
+      resolve(books[index]);
+    } else {
+      reject("No book with this ISBN found");
+    }
+  });
+  getBookByISBN.then((book) => {
+    res.send(JSON.stringify(book, null, 2));
   }
- });
+  ).catch((error) => {
+    res.status(404).send(error);
+  });
+}); 
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
